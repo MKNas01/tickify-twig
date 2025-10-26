@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Tickify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Dashboard.css - Exact copy from React + Spacing Fixes */
+    body {
+      overflow-x: hidden;
+    }
+
+    .app-wrapper {
+        max-width: 1000px;        /* controls total dashboard width */
+        width: 100%;
+        margin: 0 auto;            /* centers wrapper horizontally */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;   /* centers vertically (optional) */
+        align-items: center;       /* centers horizontally */
+        text-align: center;
+        padding: 2rem 1rem;        /* even spacing left/right */
+        box-sizing: border-box;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+      background-color: #F9FAFB;
+      font-family: 'Inter', 'Poppins', 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .dashboard-main {
+          width: 100%;
+            max-width: 900px;          /* same central width as app-wrapper */
+            margin: 0 auto;
+            overflow: visible;
+    }
+
+    .dashboard-main::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .dashboard-main::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .dashboard-main::-webkit-scrollbar-thumb {
+      background: #3B82F6;
+      border-radius: 4px;
+    }
+
+    .dashboard-main::-webkit-scrollbar-thumb:hover {
+      background: #1E40AF;
+    }
+
+    .dashboard-header {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 600;
+      color: #0F172A;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .stats-section {
+        width: 100%;
+         margin: 2rem 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        justify-items: center;      /* centers grid items */
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .stat-card {
+        width: 100%;
+        max-width: 300px;           /* prevent cards from stretching too wide */
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-card h3 {
+      font-size: 0.9rem;
+      color: #64748B;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      width: 100%;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: clamp(1.8rem, 6vw, 2.5rem);
+      font-weight: 700;
+      color: #0F172A;
+      margin: 0;
+      line-height: 1;
+      width: 100%;
+      text-align: center;
+    }
+
+    .stat-card.open .stat-number {
+      color: #16a34a;
+    }
+
+    .stat-card.resolved .stat-number {
+      color: #6b7280;
+    }
+
+    .quick-actions {
+      text-align: center;
+      margin-top: 4rem; /* Increased to prevent overlap with stats */
+    }
+
+    .quick-actions h2 {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 500;
+      color: #1E40AF;
+      margin-bottom: 1rem;
+    }
+
+    .manage-btn {
+      background: #3B82F6;
+      color: #FFFFFF;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      width: 100%;
+      max-width: 300px;
+      display: inline-block; /* Ensures no full-width stretch */
+    }
+
+    .manage-btn:hover {
+      background: #1E40AF;
+    }
+
+    .manage-btn:focus {
+      outline: 2px solid #60A5FA;
+      outline-offset: 2px;
+    }
+
+    /* Mobile/Tablet (<=900px) */
+    .menu-toggle {
+      display: none;
+      background: #3B82F6;
+      color: #FFFFFF;
+      border: none;
+      padding: 0.5rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      z-index: 50;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 30;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      .app-wrapper {
+        padding: 0 15px;
+      }
+
+      .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 60;
+      }
+
+      .overlay {
+        display: block; /* JS toggles visibility */
+      }
+
+      .dashboard-main {
+        padding: 5rem 1.5rem 2rem;
+        margin-left: 0 !important;
+        min-height: calc(100vh - 5rem); /* Adjust for toggle */
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .manage-btn {
+        padding: 10px 20px;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 250px;
+        height: 100vh;
+        background-color: #FFFFFF;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06);
+        transition: left 0.3s ease;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-content {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 1rem;
+        flex-grow: 1;
+      }
+
+      .sidebar-close {
+        display: flex;
+        justify-content: flex-end;
+        padding: 1rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 480px) {
+        .app-wrapper {
+          padding: 0 10px;
+        }
+
+        .dashboard-main {
+          padding: 4.5rem 1rem 1.5rem;
+        }
+
+        .stat-card {
+          padding: 1rem;
+        }
+
+        .stat-card h3 {
+          font-size: 0.8rem;
+        }
+
+        .quick-actions h2 {
+          font-size: 1rem;
+        }
+
+        .manage-btn {
+          font-size: 0.95rem;
+          padding: 10px 16px;
+        }
+
+        .dashboard-header {
+          font-size: 1.5rem;
+          hyphens: auto;
+        }
+      }
+    }
+
+    /* Desktop (>900px) */
+    @media (min-width: 901px) {
+      .menu-toggle {
+        display: none;
+      }
+
+      .overlay {
+        display: none;
+      }
+
+      .dashboard-main {
+        margin-left: 250px;
+        padding: 2.5rem;
+        max-width: calc(100% - 250px);
+        min-height: 100vh; /* Ensure scrollable height */
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      .stat-card {
+        padding: 2rem;
+      }
+
+      .quick-actions h2 {
+        font-size: 1.5rem;
+      }
+
+      .manage-btn {
+        max-width: 250px;
+        font-size: 1.1rem;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        background-color: #FFFFFF;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .sidebar-close {
+        display: none;
+      }
+
+      .app-wrapper {
+        padding: 0 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    {% include 'sidebar.twig' %}
+
+    <!-- Overlay (mobile) -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main content -->
+    <div class="app-wrapper">
+      <main class="dashboard-main">
+        <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+          <span class="menu-icon">☰</span>
+        </button>
+
+        <h1 class="dashboard-header">Welcome, Guest 👋</h1>
+
+        <!-- Stats Section -->
+        <section class="stats-section" aria-label="Ticket summary statistics">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Total Tickets</h3>
+              <p class="stat-number">{{ totalTickets }}</p>
+            </div>
+            <div class="stat-card open">
+              <h3>Open Tickets</h3>
+              <p class="stat-number">{{ openTickets }}</p>
+            </div>
+            <div class="stat-card resolved">
+              <h3>Resolved Tickets</h3>
+              <p class="stat-number">{{ resolvedTickets }}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Link to Management -->
+        <section class="quick-actions" aria-label="Quick actions">
+          <h2>Manage Your Tickets</h2>
+          <a href="/tickets" class="manage-btn" aria-label="Go to ticket management">
+            View All Tickets
+          </a>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.overlay');
+      sidebar.classList.toggle('open');
+      overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>

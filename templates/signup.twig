@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Tickify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Signup.css - Exact copy from React */
+    .auth-page {
+      background: #f9fafb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', 'Poppins', sans-serif;
+    }
+
+    .auth-box {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-box h1 {
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+      font-size: 1.6rem;
+    }
+
+    .auth-box p {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative; /* For toggle positioning */
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.6rem 2.5rem 0.6rem 0.6rem; /* Right padding for toggle */
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      height: 42px;
+      box-sizing: border-box;
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%; /* Align with input */
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .error {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    .btn-primary.full-width {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      color: #fff;
+      border: none;
+      width: 100%;
+      padding: 0.8rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary.full-width:hover:not(:disabled) {
+      background: #1e40af;
+    }
+
+    .btn-primary.full-width:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .switch-link {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .auth-box {
+        padding: 2rem;
+        margin: 1rem;
+      }
+
+      .auth-box h1 {
+        font-size: 1.4rem;
+      }
+
+      .form-group input {
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-page">
+    <div class="auth-box">
+      <h1>Create Account</h1>
+      <p>Sign up to start managing tickets with Tickify</p>
+
+      <form method="POST" action="/auth/signup" novalidate>
+        {% if error %}
+          <div class="error global-error">{{ error }}</div>  <!-- Server error -->
+        {% endif %}
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            value="{{ email ?? '' }}"
+            required
+            aria-describedby="email-error"
+          />
+          <span id="email-error" class="error">{{ email_error ?? '' }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            aria-describedby="password-error"
+          />
+          <button
+            type="button"
+            class="toggle-password-btn"
+            onclick="togglePassword('password')"
+            aria-label="Toggle password visibility"
+          >
+            👁️
+          </button>
+          <span id="password-error" class="error">{{ password_error ?? '' }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm"
+            name="confirm"
+            placeholder="Confirm your password"
+            required
+            aria-describedby="confirm-error"
+          />
+          <button
+            type="button"
+            class="toggle-password-btn"
+            onclick="togglePassword('confirm')"
+            aria-label="Toggle confirm password visibility"
+          >
+            👁️
+          </button>
+          <span id="confirm-error" class="error">{{ confirm_error ?? '' }}</span>
+        </div>
+
+        <button type="submit" class="btn-primary full-width">
+          Sign Up
+        </button>
+
+        <p class="switch-link">
+          Already have an account? <a href="/auth/login">Login</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const btn = field.nextElementSibling;  // Toggle btn (adjust if error span in between)
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = '🙈';
+        btn.setAttribute('aria-label', 'Hide password');
+      } else {
+        field.type = 'password';
+        btn.textContent = '👁️';
+        btn.setAttribute('aria-label', 'Show password');
+      }
+    }
+  </script>
+</body>
+</html>

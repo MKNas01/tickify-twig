@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tickify - Manage tickets effortlessly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Landing.css - Exact copy from React */
+    :root{
+      --primary: #3B82F6;
+      --light-blue: #60A5FA;
+      --dark-blue: #1E40AF;
+      --bg-light: #F9FAFB;
+      --bg-hero: #0F172A;
+      --text: #0F172A;
+      --text-on-dark: #F8FAFC;
+      --muted: #64748B;
+      --white: #FFFFFF;
+      --max-width: 1440px;
+      --gutter: 1rem;
+      font-family: 'Inter', 'Poppins', 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* Layout helpers */
+    .container{
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem;
+      box-sizing: border-box;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Hero */
+    .hero{
+      background: var(--bg-hero);
+      color: var(--text-on-dark);
+      position: relative;
+      overflow: visible;
+      padding-bottom: 4rem;
+    }
+
+    .hero .container{
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-content{
+      flex: 1 1 480px;
+      min-width: 280px;
+    }
+
+    .hero-title{
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
+      color: var(--text-on-dark);
+    }
+
+    .hero-sub{
+      color: rgba(248,250,252,0.9);
+      margin-bottom: 1.4rem;
+      max-width: 42rem;
+    }
+
+    /* CTAs */
+    .hero-cta{
+      display:flex;
+      gap: 0.8rem;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:0.5rem;
+      padding: 0.65rem 1.05rem;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.25);
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .btn-primary{
+      background: linear-gradient(90deg, var(--primary), var(--light-blue));
+      color: var(--white);
+      border: none;
+      z-index: 1;
+    }
+
+    .btn-primary:hover{ transform: translateY(-3px); filter: brightness(.98); }
+    .btn-primary:active{ transform: translateY(-1px); }
+
+    .btn-outline{
+      background: white;
+      color: var(--light-blue);
+      border: 2px solid rgba(248,250,252,0.14);
+      backdrop-filter: blur(2px);
+      z-index: 1;
+    }
+
+    .btn-outline:hover{ background: rgba(255,255,255,0.04); }
+
+    /* Hero figure/banner */
+    .hero-figure{
+      flex: 0 0 420px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:220px;
+    }
+
+    .hero-banner{
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+      display:block;
+    }
+
+    /* Decorative circles */
+    .circle{
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.16;
+      filter: blur(4px);
+    }
+
+    .circle-1{
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(180deg, var(--light-blue), var(--primary));
+      right: 8%;
+      top: -30px;
+      transform: translateZ(0);
+    }
+
+    .circle-2{
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(180deg, #7dd3fc, var(--primary));
+      left: 6%;
+      top: 40%;
+    }
+
+    /* Wave SVG container at bottom */
+    .hero-wave{
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      width: 100%;
+      line-height:0;
+    }
+
+    /* Features / cards */
+    .features{
+      background: var(--bg-light);
+      color: var(--text);
+      padding: 3rem 0 4rem 0;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      align-items:stretch;
+    }
+
+    .card{
+      background: var(--white);
+      padding:1.25rem;
+      border-radius:14px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.06);
+      color: var(--text);
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--bg-hero);
+      color: var(--text-on-dark);
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: auto; /* Pushes to bottom if in flex parent */
+    }
+
+    .footer p {
+      margin: 0;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    /* Accessibility / small helpers */
+    .sr-only{
+      position:absolute;
+      left:-9999px;
+      top:auto;
+      width:1px;
+      height:1px;
+      overflow:hidden;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 900px){
+      .container{
+        padding: 1.25rem;
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-figure{ order: 3; flex: 1 1 auto; }
+      .hero-content{ order: 1; }
+      .circle-1{ display:none; }
+      .hero-cta { justify-content: center; }
+      .cards { grid-template-columns: 1fr; gap: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 1rem; }
+      .hero { padding-bottom: 3rem; }
+      .features { padding: 2rem 0 3rem 0; }
+      .footer { padding: 1.5rem 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="landing-root" aria-labelledby="landing-title">
+    <section class="hero" aria-label="Hero">
+      <div class="container">
+        <div class="hero-content">
+          <header>
+            <h1 id="landing-title" class="hero-title" data-testid="landing-title">
+              Tickify — Manage tickets effortlessly
+            </h1>
+            <p class="hero-sub" data-testid="landing-sub">
+              A simple, consistent ticket management app — login, create, and track support tickets across projects.
+            </p>
+          </header>
+
+          <div class="hero-cta">
+            <a
+              href="/auth/login"
+              class="btn btn-primary"
+              role="button"
+              aria-label="Login"
+              data-testid="landing-cta-login"
+            >
+              Login
+            </a>
+
+            <a
+              href="/auth/signup"
+              class="btn btn-outline"
+              role="button"
+              aria-label="Get Started"
+              data-testid="landing-cta-start"
+            >
+              Get Started
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-figure" aria-hidden="false">
+          <img
+            src="assets/images/banner.png"
+            alt="Illustration of people collaborating on ticket management"
+            class="hero-banner"
+            data-testid="landing-banner"
+          />
+        </figure>
+      </div>
+
+      <div class="circle circle-1" aria-hidden="true"></div>
+      <div class="circle circle-2" aria-hidden="true"></div>
+
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="var(--bg-light)" d="M0,40 C240,120 480,0 720,40 C960,80 1200,10 1440,60 L1440 0 L0 0 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section class="features" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title" class="sr-only">Core features</h2>
+
+        <div class="cards">
+          <article class="card" data-testid="feature-1">
+            <h3>Secure Authentication</h3>
+            <p>Simulated token-based login and protected routes.</p>
+          </article>
+
+          <article class="card" data-testid="feature-2">
+            <h3>Dashboard Overview</h3>
+            <p>View total, open and resolved tickets at a glance.</p>
+          </article>
+
+          <article class="card" data-testid="feature-3">
+            <h3>Ticket CRUD</h3>
+            <p>Create, view, edit and delete tickets with validation.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" role="contentinfo" aria-label="Site footer">
+      <div class="container">
+        <p>&copy; 2025 Tickify. All rights reserved. Built with Twig for HNG-13.</p>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

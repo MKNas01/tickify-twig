@@ -1,32 +1,28 @@
 <aside class="sidebar" aria-label="Navigation">
   <!-- Close icon (mobile) -->
   <div class="sidebar-close" onclick="toggleSidebar()">
-    <span class="close-icon">❌</span>  <!-- Unicode X -->
+    <span class="close-icon">❌</span> <!-- Unicode X -->
   </div>
-
   <div class="sidebar-content">
     <h1 class="sidebar-logo">Tickify</h1>
-
     <nav class="sidebar-menu" role="navigation">
       <ul>
         <li class="sidebar-item">
-          <span class="sidebar-icon">🏠</span>  <!-- Home Unicode -->
+          <span class="sidebar-icon">🏠</span> <!-- Home Unicode -->
           <a href="/dashboard" class="sidebar-text">Dashboard</a>
         </li>
         <li class="sidebar-item">
-          <span class="sidebar-icon">🎫</span>  <!-- Ticket Unicode -->
+          <span class="sidebar-icon">🎫</span> <!-- Ticket Unicode -->
           <a href="/tickets" class="sidebar-text">My Tickets</a>
         </li>
       </ul>
     </nav>
   </div>
-
   <div class="sidebar-logout" onclick="handleLogout()">
-    <span class="sidebar-icon">🚪</span>  <!-- Logout Unicode -->
+    <span class="sidebar-icon">🚪</span> <!-- Logout Unicode -->
     <span class="sidebar-text logout-text">Logout</span>
   </div>
 </aside>
-
 <style>
   /* Sidebar.css - Exact copy from React */
   .sidebar {
@@ -41,7 +37,6 @@
     position: sticky;
     top: 0;
   }
-
   .sidebar-logo {
     text-align: center;
     font-size: 1.6rem;
@@ -51,13 +46,11 @@
     border-bottom: 1px solid #e5e7eb;
     letter-spacing: 0.5px;
   }
-
   .sidebar-menu {
     list-style: none;
     margin: 1rem 0;
     padding: 0;
   }
-
   .sidebar-item {
     display: flex;
     align-items: center;
@@ -69,31 +62,26 @@
     transition: all 0.25s ease;
     border-left: 3px solid transparent;
   }
-
   .sidebar-item:hover {
     background-color: #eff6ff;
     color: #1e3a8a;
     border-left: 3px solid #2563eb;
     transform: translateX(3px);
   }
-
   .sidebar-item a {
     text-decoration: none;
     color: inherit;
     flex: 1;
   }
-
   .sidebar-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 18px;  /* Fixed width for icon alignment */
+    min-width: 18px; /* Fixed width for icon alignment */
   }
-
   .sidebar-text {
     flex: 1;
   }
-
   .sidebar-logout {
     display: flex;
     align-items: center;
@@ -105,33 +93,27 @@
     cursor: pointer;
     transition: all 0.25s ease;
   }
-
   .sidebar-logout:hover {
     background-color: #fee2e2;
     color: #b91c1c;
     transform: translateX(3px);
   }
-
   .sidebar-content {
     flex-grow: 1;
   }
-
   .sidebar-close {
     display: none;
     justify-content: flex-end;
     padding: 1rem;
     cursor: pointer;
   }
-
   .close-icon {
     font-size: 20px;
   }
-
   @media (max-width: 900px) {
     .sidebar-close {
       display: flex;
     }
-
     .sidebar {
       position: fixed;
       top: 0;
@@ -144,13 +126,11 @@
       z-index: 100;
       flex-direction: column;
     }
-
     .sidebar.open {
       left: 0;
     }
   }
 </style>
-
 <script>
   function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
@@ -158,7 +138,6 @@
     sidebar.classList.toggle('open');
     overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
   }
-
   function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
       window.location.href = '/logout';

@@ -174,46 +174,64 @@ switch ($path) {
         // Handle POST for CRUD
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'] ?? '';
-            $title = trim($_POST['title'] ?? '');
-            $description = $_POST['description'] ?? '';
-            $status = $_POST['status'] ?? 'open';
             $id = intval($_POST['id'] ?? 0);
 
-            // Validation
-            if (empty($title)) {
-                $title_error = 'Title is required';
-            }
-            if (!in_array($status, ['open', 'in_progress', 'closed'])) {
-                $status_error = 'Invalid status';
-            }
-            if (!empty($description) && strlen($description) < 10) {
-                $description_error = 'Description must be at least 10 characters';
-            }
-
-            if (empty($title_error) && empty($status_error) && empty($description_error)) {
-                if ($action === 'create') {
-                    $tickets[] = [
-                        'id' => time(),
-                        'title' => $title,
-                        'description' => $description,
-                        'status' => $status,
-                        'createdAt' => date('Y-m-d H:i:s')
-                    ];
-                } elseif ($action === 'update' && $id > 0) {
-                    foreach ($tickets as &$ticket) {
-                        if ($ticket['id'] == $id) {
-                            $ticket['title'] = $title;
-                            $ticket['description'] = $description;
-                            $ticket['status'] = $status;
-                            break;
-                        }
-                    }
-                } elseif ($action === 'delete' && $id > 0) {
+            if ($action === 'delete') {
+                // No validation needed for delete
+                if ($id > 0) {
                     $tickets = array_filter($tickets, fn($t) => $t['id'] != $id);
+                    $_SESSION['tickify_tickets'] = array_values($tickets);  // Re-index
+                    $error = 'Ticket deleted successfully!';
+                } else {
+                    $error = 'Invalid ticket ID.';
+                }
+            } else {
+                // Create or update: run validation
+                $title = trim($_POST['title'] ?? '');
+                $description = $_POST['description'] ?? '';
+                $status = $_POST['status'] ?? 'open';
+
+                // Validation
+                if (empty($title)) {
+                    $title_error = 'Title is required';
+                }
+                if (!in_array($status, ['open', 'in_progress', 'closed'])) {
+                    $status_error = 'Invalid status';
+                }
+                if (!empty($description) && strlen($description) < 10) {
+                    $description_error = 'Description must be at least 10 characters';
                 }
 
-                $_SESSION['tickify_tickets'] = array_values($tickets);  // Re-index
-                $error = 'Ticket ' . ($action === 'delete' ? 'deleted' : ($action === 'update' ? 'updated' : 'created')) . ' successfully!';  // Sim toast
+                if (empty($title_error) && empty($status_error) && empty($description_error)) {
+                    if ($action === 'create') {
+                        $tickets[] = [
+                            'id' => time(),
+                            'title' => $title,
+                            'description' => $description,
+                            'status' => $status,
+                            'createdAt' => date('Y-m-d H:i:s')
+                        ];
+                    } elseif ($action === 'update' && $id > 0) {
+                        foreach ($tickets as &$ticket) {
+                            if ($ticket['id'] == $id) {
+                                $ticket['title'] = $title;
+                                $ticket['description'] = $description;
+                                $ticket['status'] = $status;
+                                break;
+                            }
+                        }
+                    }
+
+                    $_SESSION['tickify_tickets'] = array_values($tickets);  // Re-index
+                    $error = 'Ticket ' . ($action === 'update' ? 'updated' : 'created') . ' successfully!';  // Sim toast
+                }
+
+                // If create succeeded (not edit), reset form
+                if ($action === 'create' && empty($title_error) && empty($status_error) && empty($description_error)) {
+                    $form = ['title' => '', 'description' => '', 'status' => 'open'];
+                    $edit_mode = false;
+                    $edit_ticket = null;
+                }
             }
         }
 
@@ -228,10 +246,10 @@ switch ($path) {
             'status_error' => $status_error ?? ''
         ]);
         break;
-        echo $twig->render('tickets.twig', [
-            'tickets' => $_SESSION['tickify_tickets'] ?? [],
-            'error' => $error ?? ''
-        ]);
+    case 'logout':
+        session_destroy();
+        header('Location: /');
+        exit;
         break;
     default:
         echo $twig->render('landing.twig');  // 404 fallback to landing
